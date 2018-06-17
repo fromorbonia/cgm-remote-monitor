@@ -25,3 +25,10 @@ npm-debug.log
 
 /tmp
 *.js~
+.vs/NodejsApp1/v14/.suo
+bin/Microsoft.NodejsTools.WebRole.dll
+NodejsApp1.njsproj
+*.cache
+SyncfusionTroubleshooterErrors.log
+obj/Debug/NodejsApp1.njsproj.FileListAbsolute.txt
+npm-shrinkwrap.json
