@@ -116,7 +116,7 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   cd "$DEPLOYMENT_TARGET"
   echo Installing webpack and webpack-command and yargs
   #eval $NPM_CMD install --production windows-build-tools
-  eval $NPM_CMD config set msbuild "D:\Program Files (x86)\MSBuild-15.3.409.57025\MSBuild\15.0\Bin"
+  eval $NPM_CMD config set msbuild "\"D:\Program Files (x86)\MSBuild-15.3.409.57025\MSBuild\15.0\Bin\" "
   eval $NPM_CMD install -g webpack webpack-command 
   eval $NPM_CMD install yargs
   eval $NPM_CMD install --production --scripts-prepend-node-path
