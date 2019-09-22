@@ -336,6 +336,7 @@
       "properties": {
         "RepoUrl": "[parameters('repoUrl')]",
         "branch": "[parameters('branch')]",
+        "bob": "[parameters('bob')]",
         "IsManualIntegration": true
       }
     }]
