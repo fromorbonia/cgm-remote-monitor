@@ -1,0 +1,10 @@
+<?xml version="1.0"?> 
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform"> 
+  <system.webServer> 
+    <runtime xdt:Transform="InsertIfMissing">
+      <environmentVariables xdt:Transform="InsertIfMissing">
+        <add name="PATH" value="D:\Program Files (x86)\MSBuild-15.3.409.57025\MSBuild\15.0\Bin;%PATH%" xdt:Locator="Match(name)" xdt:Transform="Replace" />    
+      </environmentVariables>
+    </runtime> 
+  </system.webServer> 
+</configuration>
