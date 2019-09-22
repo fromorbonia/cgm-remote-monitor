@@ -320,7 +320,7 @@
             "value": "10.15.2"
           }, {
             "name": "SCM_COMMAND_IDLE_TIMEOUT",
-            "value": "300"
+            "value": "900"
           }
 
         ]
