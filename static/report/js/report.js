@@ -532,6 +532,7 @@
       if (skipRender) {
         console.log('Skipping ',plugin.name);
       } else {
+          console.log("sorted days:", sorteddaystoshow);
       	plugin.report(datastorage,sorteddaystoshow,options);  
       }
 
