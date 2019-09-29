@@ -25,7 +25,7 @@ exitWithMessageOnError "Missing node.js executable, please install node.js, if a
 
 # Setup
 # -----
-echo NPM Config test 9 log files 
+echo NPM Config test 10 node-gyp upgrade 
 
 SCRIPT_DIR="${BASH_SOURCE[0]%\\*}"
 SCRIPT_DIR="${SCRIPT_DIR%/*}"
@@ -116,6 +116,7 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   cd "$DEPLOYMENT_TARGET"
   echo Installing webpack and webpack-command and yargs
   #eval $NPM_CMD install --production windows-build-tools
+  eval $NPM_CMD config set msvs_version 2017 –global
   eval $NPM_CMD config set msbuild_path "\"D:\Program Files (x86)\MSBuild-15.3.409.57025\MSBuild\15.0\Bin\" "
   eval $NPM_CMD install -g webpack webpack-command --verbose > instweb.txt
   echo Installing yargs
