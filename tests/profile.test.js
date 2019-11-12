@@ -227,6 +227,7 @@ describe('Profile', function ( ) {
                   'carbs_hr': 30,
                   'target_low': 4.5,
                   'target_high': 8,
+                  "units": "mmol",
                   "basal": [
                     {
                         "time": "00:00",
@@ -266,7 +267,7 @@ describe('Profile', function ( ) {
               "20190621-1": {
                   "dia": "4",
                   "timezone": moment.tz().zoneName(),  //Assume these are in the localtime zone so tests pass when not on UTC time
-                  "startDate": "1970-01-01T00:00:00.000Z",
+                  "startDate": "1970-01-01T00:00:00.000Z", 
                   'sens': [
                       {
                           'time': '00:00',
@@ -298,6 +299,7 @@ describe('Profile', function ( ) {
                   'carbs_hr': 35,
                   'target_low': 4.2,
                   'target_high': 9,
+                  "units": "mmol",
                   "basal": [
                     {
                         "time": "00:00",
