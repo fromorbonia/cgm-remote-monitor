@@ -457,22 +457,24 @@
         sorteddaystoshow.push(day);
       }
       if (loadeddays === dayscount) {
-        sorteddaystoshow.sort();
-        var fromDate = sorteddaystoshow[0];
-        var toDate = sorteddaystoshow[(loadeddays-1)];
-        if (options.order === report_plugins.consts.ORDER_NEWESTONTOP) {
-          sorteddaystoshow.reverse();
-        }
-        console.warn(loadeddays, sorteddaystoshow.length, sorteddaystoshow, fromDate, toDate);
+          sorteddaystoshow.sort();
+          var from = sorteddaystoshow[0];
+          var dFrom = sorteddaystoshow[0];
+          var dTo = sorteddaystoshow[(sorteddaystoshow.length - 1)];
+          console.warn('try again', dFrom, dTo);
 
-        loadProfileSwitch(fromDate, function loadProfileSwitchCallback() {
-          loadProfiles(fromDate, toDate, function loadProfilesCallback() {
-            $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
-            window.setTimeout(function () {
-              showreports(options);
-            }, 0);
+          if (options.order === report_plugins.consts.ORDER_NEWESTONTOP) {
+            sorteddaystoshow.reverse();
+          }
+
+          loadProfileSwitch(from, function loadProfileSwitchCallback() {
+            loadProfilesRange(sorteddaystoshow, function loadProfilesCallback() {
+              $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
+              window.setTimeout(function () {
+                showreports(options);
+              },   0);
+            });
           });
-        });
       }
     }
     
@@ -747,11 +749,14 @@
     }).done(callback);
   }
 
-  function loadProfilesRange(fromDate, toDate, callback) {
+  function loadProfilesRange(sortedDays, callback) {
       $('#info > b').html('<b>' + translate('Loading profile range') + ' ...</b>');
-      console.warn(fromDate);
-      console.warn(toDate);
-      var tquery = '?find[startDate][$gte]=' + new Date(fromDate).toISOString() + '&find[startDate][$lte]=' + new Date(toDate).toISOString();
+      console.warn(sortedDays);
+      var dFrom = sortedDays[0];
+      var dTo = sortedDays[(sortedDays.length - 1)];
+
+      console.warn(dFrom, dTo);
+      var tquery = '?find[startDate][$gte]=' + new Date(dFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dTo).toISOString();
       console.warn(tquery);
       $.ajax('/api/v1/profiles'+tquery, {
           headers: client.headers()
