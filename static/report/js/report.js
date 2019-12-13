@@ -753,6 +753,7 @@
       $('#info > b').html('<b>' + translate('Loading profile range') + ' ...</b>');
 
       console.warn(dateFrom, dateTo);
+
       var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString();
       console.warn(tquery);
       $.ajax('/api/v1/profiles'+tquery, {
@@ -762,6 +763,30 @@
         }
         , error: function () {
             datastorage.profiles = [];
+        }
+      });
+
+      //Find first one before the start date and add to datastorage.profiles
+      tquery = '?find[startDate][$lt]=' + new Date(dateFrom).toISOString() + '&count=1';
+      console.warn(tquery);
+      $.ajax('/api/v1/profiles' + tquery, {
+          headers: client.headers()
+        , success: function (records) {
+            records.forEach(function (r) {
+                datastorage.profiles.push(r); 
+            });
+        }
+      });
+
+      //Find first one after the end date and add to datastorage.profiles
+      tquery = '?find[startDate][$gt]=' + new Date(dateTo).toISOString() + '&count=1';
+      console.warn(tquery);
+      $.ajax('/api/v1/profiles' + tquery, {
+          headers: client.headers()
+        , success: function (records) {
+            records.forEach(function (r) {
+                datastorage.profiles.push(r); 
+            });
         }
       }).done(callback);
   }
