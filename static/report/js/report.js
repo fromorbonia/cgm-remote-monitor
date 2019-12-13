@@ -459,9 +459,11 @@
       if (loadeddays === dayscount) {
         sorteddaystoshow.sort();
         var from = sorteddaystoshow[0];
+        var to = sorteddaystoshow[(loadeddays -1)];
         if (options.order === report_plugins.consts.ORDER_NEWESTONTOP) {
           sorteddaystoshow.reverse();
         }
+        console.warn(loadeddays, sorteddaystoshow.length, lastIndex, sorteddaystoshow, from, to);
         loadProfileSwitch(from, function loadProfileSwitchCallback() {
           loadProfiles(function loadProfilesCallback() {
             $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
@@ -742,6 +744,23 @@
        datastorage.profiles = [];
       }
     }).done(callback);
+  }
+
+  function loadProfilesRange(fromDate, toDate, callback) {
+      $('#info > b').html('<b>' + translate('Loading profile range') + ' ...</b>');
+      console.warn(fromDate);
+      console.warn(toDate);
+      var tquery = '?find[startDate][$gte]=' + new Date(fromDate).toISOString() + '&find[startDate][$lte]=' + new Date(toDate).toISOString();
+      console.warn(tquery);
+      $.ajax('/api/v1/profiles'+tquery, {
+          headers: client.headers()
+        , success: function (records) {
+            datastorage.profiles = records;
+        }
+        , error: function () {
+            datastorage.profiles = [];
+        }
+      }).done(callback);
   }
 
 
