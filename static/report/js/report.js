@@ -467,8 +467,8 @@
             sorteddaystoshow.reverse();
           }
 
-          loadProfileSwitch(from, function loadProfileSwitchCallback() {
-            loadProfilesRange(sorteddaystoshow, function loadProfilesCallback() {
+          loadProfileSwitch(dFrom, function loadProfileSwitchCallback() {
+              loadProfilesRange(dFrom, dTo, function loadProfilesCallback() {
               $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
               window.setTimeout(function () {
                 showreports(options);
@@ -749,14 +749,11 @@
     }).done(callback);
   }
 
-  function loadProfilesRange(sortedDays, callback) {
+  function loadProfilesRange(dateFrom, dateTo, callback) {
       $('#info > b').html('<b>' + translate('Loading profile range') + ' ...</b>');
-      console.warn(sortedDays);
-      var dFrom = sortedDays[0];
-      var dTo = sortedDays[(sortedDays.length - 1)];
 
-      console.warn(dFrom, dTo);
-      var tquery = '?find[startDate][$gte]=' + new Date(dFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dTo).toISOString();
+      console.warn(dateFrom, dateTo);
+      var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString();
       console.warn(tquery);
       $.ajax('/api/v1/profiles'+tquery, {
           headers: client.headers()
