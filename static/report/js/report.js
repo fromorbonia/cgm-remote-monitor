@@ -463,7 +463,7 @@
         if (options.order === report_plugins.consts.ORDER_NEWESTONTOP) {
           sorteddaystoshow.reverse();
         }
-        console.warn(loadeddays, sorteddaystoshow.length, lastIndex, sorteddaystoshow, from, to);
+        console.warn(loadeddays, sorteddaystoshow.length, sorteddaystoshow, from, to);
         loadProfileSwitch(from, function loadProfileSwitchCallback() {
           loadProfiles(function loadProfilesCallback() {
             $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
