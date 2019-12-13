@@ -458,14 +458,15 @@
       }
       if (loadeddays === dayscount) {
         sorteddaystoshow.sort();
-        var from = sorteddaystoshow[0];
-        var toDate = sorteddaystoshow[1];
+        var fromDate = sorteddaystoshow[0];
+        var toDate = sorteddaystoshow[(loadeddays-1)];
         if (options.order === report_plugins.consts.ORDER_NEWESTONTOP) {
           sorteddaystoshow.reverse();
         }
-        console.warn(loadeddays, sorteddaystoshow.length, sorteddaystoshow, from, toDate);
-        loadProfileSwitch(from, function loadProfileSwitchCallback() {
-          loadProfiles(function loadProfilesCallback() {
+        console.warn(loadeddays, sorteddaystoshow.length, sorteddaystoshow, fromDate, toDate);
+
+        loadProfileSwitch(fromDate, function loadProfileSwitchCallback() {
+          loadProfiles(fromDate, toDate, function loadProfilesCallback() {
             $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
             window.setTimeout(function () {
               showreports(options);
