@@ -459,11 +459,11 @@
       if (loadeddays === dayscount) {
         sorteddaystoshow.sort();
         var from = sorteddaystoshow[0];
-        var to = sorteddaystoshow[(loadeddays -1)];
+        var toDate = sorteddaystoshow[1];
         if (options.order === report_plugins.consts.ORDER_NEWESTONTOP) {
           sorteddaystoshow.reverse();
         }
-        console.warn(loadeddays, sorteddaystoshow.length, sorteddaystoshow, from, to);
+        console.warn(loadeddays, sorteddaystoshow.length, sorteddaystoshow, from, toDate);
         loadProfileSwitch(from, function loadProfileSwitchCallback() {
           loadProfiles(function loadProfilesCallback() {
             $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
