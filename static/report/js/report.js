@@ -1,3 +1,5 @@
+
+
 // TODO:
 // - bypass nightmode in reports
 // - on save/delete treatment ctx.bus.emit('data-received'); is not enough. we must add something like 'data-updated'
@@ -11,6 +13,7 @@
   var Nightscout = window.Nightscout;
   var client = Nightscout.client;
   var report_plugins = Nightscout.report_plugins;
+  var rp = require('request-promise');
 
   client.init(function loaded () {
 
@@ -756,41 +759,77 @@
 
       var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString();
       console.warn(tquery);
-      $.ajax('/api/v1/profiles'+tquery, {
-          headers: client.headers()
-        , success: function (records) {
-            datastorage.profiles = records;
-        }
-        , error: function () {
-            datastorage.profiles = [];
-        }
+
+      datastorage.profiles = [];
+      
+      loadProfilesRangeCore(tquery).then(function(records) {
+          datastorage.profiles = records;
+          return resolve(dateFrom);
+        })
+        .then(loadProfilesRangePrevious)
+        .then(function(records) {
+            records.forEach(function (r) {
+                datastorage.profiles.push(r);
+            });
+            return resolve(dateTo);
+        })
+        .then(loadProfilesRangeNext)
+        .then(function(records) {
+            records.forEach(function (r) {
+                datastorage.profiles.push(r);
+            });
+            return true;
+        })
+        .then(callback);
+
+      console.log(datastorage.profiles);
+  }
+
+  function loadProfilesRangeCore(queryString) {
+      console.log('loadProfilesRangeCore')
+      return   rp({
+          'method': 'GET',
+          'uri': '/api/v1/profiles'+queryString,
+          'json': true,
+          'headers': client.headers()
       });
 
+  }
+  function loadProfilesRangePrevious(dateFrom) {
+      $('#info > b').html('<b>' + translate('Loading previous profile') + ' ...</b>');
+
+      console.warn(dateFrom);
+
       //Find first one before the start date and add to datastorage.profiles
-      tquery = '?find[startDate][$lt]=' + new Date(dateFrom).toISOString() + '&count=1';
+      var tquery = '?find[startDate][$lt]=' + new Date(dateFrom).toISOString() + '&count=1';
       console.warn(tquery);
-      $.ajax('/api/v1/profiles' + tquery, {
-          headers: client.headers()
-        , success: function (records) {
-            records.forEach(function (r) {
-                datastorage.profiles.push(r); 
-            });
-        }
+
+      return   rp({
+          'method': 'GET',
+          'uri': '/api/v1/profiles'+tquery,
+          'json': true,
+          'headers': client.headers()
       });
+  }
+
+  function loadProfilesRangeNext(dateTo) {
+      $('#info > b').html('<b>' + translate('Loading next profile') + ' ...</b>');
+
+      console.warn(dateTo);
+
 
       //Find first one after the end date and add to datastorage.profiles
       tquery = '?find[startDate][$gt]=' + new Date(dateTo).toISOString() + '&count=1';
       console.warn(tquery);
-      $.ajax('/api/v1/profiles' + tquery, {
-          headers: client.headers()
-        , success: function (records) {
-            records.forEach(function (r) {
-                datastorage.profiles.push(r); 
-            });
-        }
-      }).done(callback);
-  }
 
+      return   rp({
+          'method': 'GET',
+          'uri': '/api/v1/profiles'+tquery,
+          'json': true,
+          'headers': client.headers()
+      });
+
+  }
 
   function processData(data, day, options, callback) {
     if (daystoshow[day].treatmentsonly) {
