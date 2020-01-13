@@ -13,8 +13,7 @@
   var Nightscout = window.Nightscout;
   var client = Nightscout.client;
   var report_plugins = Nightscout.report_plugins;
-  var rp = require('request-promise');
-
+  
   client.init(function loaded () {
 
   // init HTML code
@@ -755,80 +754,81 @@
   function loadProfilesRange(dateFrom, dateTo, callback) {
       $('#info > b').html('<b>' + translate('Loading profile range') + ' ...</b>');
 
-      console.warn(dateFrom, dateTo);
-
-      var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString();
-      console.warn(tquery);
-
-      datastorage.profiles = [];
-      
-      loadProfilesRangeCore(tquery).then(function(records) {
-          datastorage.profiles = records;
-          return resolve(dateFrom);
-        })
-        .then(loadProfilesRangePrevious)
-        .then(function(records) {
-            records.forEach(function (r) {
-                datastorage.profiles.push(r);
-            });
-            return resolve(dateTo);
-        })
-        .then(loadProfilesRangeNext)
-        .then(function(records) {
-            records.forEach(function (r) {
-                datastorage.profiles.push(r);
-            });
-            return true;
-        })
-        .then(callback);
-
-      console.log(datastorage.profiles);
-  }
-
-  function loadProfilesRangeCore(queryString) {
-      console.log('loadProfilesRangeCore')
-      return   rp({
-          'method': 'GET',
-          'uri': '/api/v1/profiles'+queryString,
-          'json': true,
-          'headers': client.headers()
+      console.warn('Range', dateFrom, dateTo);
+      $.when(
+        loadProfilesRangeCore(dateFrom, dateTo),
+        loadProfilesRangePrevious(dateFrom),
+        loadProfilesRangeNext(dateTo)
+      )
+      .done(callback)
+      .fail(function () {
+        datastorage.profiles = [];
       });
 
+
+      console.log('Range end result', datastorage.profiles);
   }
+
+  function loadProfilesRangeCore(dateFrom, dateTo) {
+      $('#info > b').html('<b>' + translate('Loading core profiles') + ' ...</b>');
+
+      console.warn('Range core', dateFrom, dateTo);
+
+      var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString();
+      console.warn('Range core', tquery);
+
+      return $.ajax('/api/v1/profiles' + tquery, {
+        headers: client.headers(),
+          async: false,
+          success: function (records) {
+              console.log('Range Core Success start'); 
+              datastorage.profiles = records;
+          }
+      });
+
+
+  }
+
   function loadProfilesRangePrevious(dateFrom) {
       $('#info > b').html('<b>' + translate('Loading previous profile') + ' ...</b>');
 
-      console.warn(dateFrom);
+      console.warn('Range Prev', dateFrom);
 
       //Find first one before the start date and add to datastorage.profiles
       var tquery = '?find[startDate][$lt]=' + new Date(dateFrom).toISOString() + '&count=1';
-      console.warn(tquery);
+      console.warn('Range Prev', tquery);
 
-      return   rp({
-          'method': 'GET',
-          'uri': '/api/v1/profiles'+tquery,
-          'json': true,
-          'headers': client.headers()
+      return $.ajax('/api/v1/profiles' + tquery, {
+        headers: client.headers(),
+        async: false,
+          success: function (records) {
+              console.log('Range Prev Success start'); 
+              records.forEach(function (r) {
+                datastorage.profiles.push(r);
+              });
+          }
       });
   }
 
   function loadProfilesRangeNext(dateTo) {
       $('#info > b').html('<b>' + translate('Loading next profile') + ' ...</b>');
 
-      console.warn(dateTo);
-
+      console.log('Range Next', dateTo);
 
       //Find first one after the end date and add to datastorage.profiles
-      tquery = '?find[startDate][$gt]=' + new Date(dateTo).toISOString() + '&count=1';
-      console.warn(tquery);
+      var tquery = '?find[startDate][$gt]=' + new Date(dateTo).toISOString() + '&count=1';
+      console.log('Range Next', tquery);
 
-      return   rp({
-          'method': 'GET',
-          'uri': '/api/v1/profiles'+tquery,
-          'json': true,
-          'headers': client.headers()
+      return $.ajax('/api/v1/profiles' + tquery, {
+        headers: client.headers(),
+          async: false,
+          success: function (records) {
+              records.forEach(function (r) {
+                datastorage.profiles.push(r);
+              });
+            console.log('Range Next Success'); 
+          }
       });
-
   }
 
   function processData(data, day, options, callback) {
