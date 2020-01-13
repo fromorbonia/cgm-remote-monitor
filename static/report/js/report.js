@@ -795,7 +795,7 @@
       console.warn('Range Prev', dateFrom);
 
       //Find first one before the start date and add to datastorage.profiles
-      var tquery = '?find[startDate][$lt]=' + new Date(dateFrom).toISOString() + '&count=1';
+      var tquery = '?find[startDate][$lt]=' + new Date(dateFrom).toISOString() + '&sort[startDate]=-1&count=1';
       console.warn('Range Prev', tquery);
 
       return $.ajax('/api/v1/profiles' + tquery, {
@@ -816,7 +816,7 @@
       console.log('Range Next', dateTo);
 
       //Find first one after the end date and add to datastorage.profiles
-      var tquery = '?find[startDate][$gt]=' + new Date(dateTo).toISOString() + '&count=1';
+      var tquery = '?find[startDate][$gt]=' + new Date(dateTo).toISOString() + '&sort[startDate]=1&count=1';
       console.log('Range Next', tquery);
 
       return $.ajax('/api/v1/profiles' + tquery, {
