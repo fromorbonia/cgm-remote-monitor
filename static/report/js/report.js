@@ -470,7 +470,7 @@
           }
 
           loadProfileSwitch(dFrom, function loadProfileSwitchCallback() {
-              loadProfilesRange(dFrom, dTo, function loadProfilesCallback() {
+              loadProfilesRange(dFrom, dTo, sorteddaystoshow.length, function loadProfilesCallback() {
               $('#info > b').html('<b>' + translate('Rendering') + ' ...</b>');
               window.setTimeout(function () {
                 showreports(options);
@@ -751,12 +751,12 @@
     }).done(callback);
   }
 
-  function loadProfilesRange(dateFrom, dateTo, callback) {
+  function loadProfilesRange(dateFrom, dateTo, dayCount, callback) {
       $('#info > b').html('<b>' + translate('Loading profile range') + ' ...</b>');
 
       console.warn('Range', dateFrom, dateTo);
       $.when(
-        loadProfilesRangeCore(dateFrom, dateTo),
+        loadProfilesRangeCore(dateFrom, dateTo, dayCount),
         loadProfilesRangePrevious(dateFrom),
         loadProfilesRangeNext(dateTo)
       )
@@ -769,12 +769,12 @@
       console.log('Range end result', datastorage.profiles);
   }
 
-  function loadProfilesRangeCore(dateFrom, dateTo) {
+  function loadProfilesRangeCore(dateFrom, dateTo, dayCount) {
       $('#info > b').html('<b>' + translate('Loading core profiles') + ' ...</b>');
 
       console.warn('Range core', dateFrom, dateTo);
 
-      var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString();
+      var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString() + '&count=' + dayCount;
       console.warn('Range core', tquery);
 
       return $.ajax('/api/v1/profiles' + tquery, {
