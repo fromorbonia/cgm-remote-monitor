@@ -774,7 +774,8 @@
 
       console.warn('Range core', dateFrom, dateTo);
 
-      var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString() + '&count=' + dayCount;
+      //The results must be returned in descending order to work with key logic in routines such as getCurrentProfile 
+      var tquery = '?find[startDate][$gte]=' + new Date(dateFrom).toISOString() + '&find[startDate][$lte]=' + new Date(dateTo).toISOString() + '&sort[startDate]=-1&count=' + dayCount;
       console.warn('Range core', tquery);
 
       return $.ajax('/api/v1/profiles' + tquery, {
@@ -823,8 +824,9 @@
         headers: client.headers(),
           async: false,
           success: function (records) {
-              records.forEach(function (r) {
-                datastorage.profiles.push(r);
+            records.forEach(function (r) {
+                //must be inserted as top to maintain profiles being sorted by date in descending order
+                datastorage.profiles.unshift(r);
               });
             console.log('Range Next Success'); 
           }
