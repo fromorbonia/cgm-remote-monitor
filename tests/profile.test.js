@@ -377,4 +377,10 @@ describe('Profile', function ( ) {
       dia.should.equal(14);
   });
 
+  
+  it('should select the correct profile for 15:00 with multiple profiles', function () {
+      var curProfile = multiProfile.getCurrentProfile(threepm);
+      curProfile.carbs_hr.should.equal(30);
+  });
+
 });
